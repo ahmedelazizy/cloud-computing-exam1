@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امتحان Cloud Computing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .exam-info {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-item .label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .questions {
+            padding: 30px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-right: 4px solid #667eea;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .options {
+            margin-right: 10px;
+        }
+
+        .option {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option input[type="radio"] {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            background: #e8eeff;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .button-container {
+            text-align: center;
+            padding: 20px 30px 30px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+
+        .result {
+            display: none;
+            padding: 20px;
+            margin: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.pass {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.fail {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .result h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .result p {
+            font-size: 18px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+        
+        <div class="header">
+            <h1>امتحان Cloud Computing</h1>
+            <p>Module 1-4 AVI 2025-26</p>
+        </div>
+
+        <div class="exam-info">
+            <div class="info-item">
+                <div class="label">عدد الأسئلة</div>
+                <div class="value" id="totalQuestions">60</div>
+            </div>
+            <div class="info-item">
+                <div class="label">الأسئلة المجابة</div>
+                <div class="value" id="answeredQuestions">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">الدرجة</div>
+                <div class="value" id="score">-</div>
+            </div>
+        </div>
+
+        <div class="result" id="result"></div>
+
+        <div class="questions" id="questionsContainer"></div>
+
+        <div class="button-container">
+            <button class="btn btn-submit" onclick="submitExam()">تسليم الامتحان</button>
+            <button class="btn btn-reset" onclick="resetExam()">إعادة المحاولة</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {q: "Cloud computing is seen as a:", options: ["Traditional technology", "Disruptive technology", "Outdated technology", "Niche technology"], answer: 1},
+            {q: "Which of the following is NOT a major trend driving cloud adoption?", options: ["Mobility", "Big Data", "Social media", "Tape storage"], answer: 3},
+            {q: "According to Gartner, the adoption of cloud computing is:", options: ["Declining", "Stagnant", "Rising rapidly", "Cyclical"], answer: 2},
+            {q: "Cloud computing enables organizations to:", options: ["Use only their own IT resources", "Optimize and innovate their business models", "Avoid any technology investment", "Eliminate IT departments entirely"], answer: 1},
+            {q: "NIST's definition of cloud computing does NOT include:", options: ["On-demand self-service", "Broad network access", "Proprietary hardware lock-in", "Resource pooling"], answer: 2},
+            {q: "The cloud model allows consumers to:", options: ["Purchase physical servers", "Rent IT resources as a service", "Use only on-premise software", "Avoid using networks"], answer: 1},
+            {q: "Cloud infrastructure is typically deployed in:", options: ["Personal computers", "Data centers", "Mobile devices", "Local folders"], answer: 1},
+            {q: "A data center typically does NOT include:", options: ["Servers", "Storage systems", "Network equipment", "Farm irrigation systems"], answer: 3},
+            {q: "Cloud computing is similar to which utility service model?", options: ["Postal service", "Electricity service", "Public transportation", "Library service"], answer: 1},
+            {q: "The term 'cloud' in technical architecture diagrams commonly represents:", options: ["Weather systems", "The Internet or a network", "Storage devices", "Programming languages"], answer: 1},
+            {q: "Cloud computing is primarily based on which model?", options: ["Mainframe model", "Client-server model", "Peer-to-peer model", "Standalone model"], answer: 1},
+            {q: "Cloud computing enables small companies to:", options: ["Avoid competition", "Acquire IT resources at low cost", "Use only physical hardware", "Ignore security"], answer: 1},
+            {q: "The provider of cloud computing resources is called a:", options: ["Cloud service provider", "End-user", "Government agency", "Non-profit organization"], answer: 0},
+            {q: "Cloud services can be a combination of:", options: ["Only software", "Only storage", "IT resources", "Only networks"], answer: 2},
+            {q: "In cloud computing, resources are returned to the pool when:", options: ["Destroyed", "No longer needed", "Permanently allocated", "Sold to third parties"], answer: 1},
+            {q: "Rapid elasticity is supported by:", options: ["Manual provisioning only", "Automated provisioning", "Fixed resource limits", "No scaling options"], answer: 1},
+            {q: "Which is NOT a benefit of resource pooling?", options: ["Improved resource utilization", "Higher costs for consumers", "Flexible provisioning", "Multi-tenancy support"], answer: 1},
+            {q: "In resource pooling, the exact location of resources is typically:", options: ["Always known to the consumer", "Transparent and controllable", "Unknown to the consumer", "Fixed in one data center"], answer: 2},
+            {q: "The 'sense of location independence' means:", options: ["Consumers control physical location", "Consumers know exactly where data is stored", "Consumers may specify location at a high level (e.g., country)", "Location is irrelevant"], answer: 2},
+            {q: "Which characteristic allows consumers to access services from anywhere?", options: ["On-demand self-service", "Broad network access", "Resource pooling", "Rapid elasticity"], answer: 1},
+            {q: "Self-service portals reduce:", options: ["Time to provision IT resources", "Security", "Network speed", "Data center size"], answer: 0},
+            {q: "Which of the following is a key benefit of cloud computing?", options: ["Higher capital expenditure", "Business agility", "Longer time-to-market", "Reduced flexibility"], answer: 1},
+            {q: "Business agility enables:", options: ["Slower deployment", "Faster innovation", "Higher costs", "Less scalability"], answer: 1},
+            {q: "Cloud computing reduces IT costs by:", options: ["Increasing capital expenditure (CAPEX)", "Reducing up-front CAPEX", "Eliminating all costs", "Increasing energy consumption"], answer: 1},
+            {q: "High availability in cloud computing is achieved through:", options: ["Single data centers", "Redundant infrastructure components", "No backup systems", "Manual failover only"], answer: 1},
+            {q: "Cloud computing can lower the total cost of ownership (TCO) by:", options: ["Increasing hardware purchases", "Reducing management and operational expenses", "Increasing energy usage", "Eliminating all IT staff"], answer: 1},
+            {q: "Business continuity in the cloud helps:", options: ["Increase downtime impact", "Mitigate downtime impact", "Eliminate backups", "Avoid all disasters"], answer: 1},
+            {q: "Flexible scaling allows consumers to:", options: ["Scale resources only manually", "Scale resources automatically based on demand", "Never scale down", "Avoid using cloud services"], answer: 1},
+            {q: "Flexibility of access means:", options: ["Access only from company-owned devices", "Access from anywhere on any device", "No network access", "Only desktop access"], answer: 1},
+            {q: "Cloud computing supports BYOD (Bring Your Own Device) by:", options: ["Requiring company devices only", "Allowing personal devices to access cloud services", "Blocking mobile access", "Increasing device costs"], answer: 1},
+            {q: "Application development and testing in the cloud:", options: ["Requires physical hardware purchases", "Allows testing at a larger scale", "Is riskier for production systems", "Slows down development"], answer: 1},
+            {q: "Simplified infrastructure management means consumers manage:", options: ["All hardware and software", "Only resources needed to access cloud services", "Only the cloud provider's infrastructure", "No resources at all"], answer: 1},
+            {q: "Increased collaboration in the cloud is enabled by:", options: ["Email-only communication", "Centralized sharing and simultaneous access", "Isolated data storage", "No real-time access"], answer: 1},
+            {q: "Masked complexity in cloud computing:", options: ["Increases user knowledge requirements", "Hides IT intricacies from end-users", "Makes services harder to use", "Requires specialized training for all users"], answer: 1},
+            {q: "Which is NOT a benefit of cloud computing?", options: ["Reduced business agility", "Lower IT costs", "High availability", "Flexible scaling"], answer: 0},
+            {q: "Cloud-based backup is an example of which benefit?", options: ["Business continuity", "Increased collaboration", "Masked complexity", "Simplified management"], answer: 0},
+            {q: "Pay-per-use pricing helps reduce:", options: ["Only operational costs", "Capital expenditure", "Both CAPEX and OPEX", "Neither CAPEX nor OPEX"], answer: 2},
+            {q: "Rapid elasticity supports which benefit?", options: ["Flexible scaling", "Fixed capacity", "Higher costs", "Manual intervention"], answer: 0},
+            {q: "Which benefit allows organizations to recover from outages?", options: ["Business agility", "Business continuity", "Masked complexity", "Simplified management"], answer: 1},
+            {q: "Cloud computing can reduce time-to-market by:", options: ["Slowing down deployment", "Accelerating resource provisioning", "Increasing approval cycles", "Limiting innovation"], answer: 1},
+            {q: "Which benefit is related to energy and space savings?", options: ["Reduced IT costs", "High availability", "Business agility", "Increased collaboration"], answer: 0},
+            {q: "Fault tolerance in cloud computing is part of which benefit?", options: ["High availability", "Business agility", "Flexible scaling", "Masked complexity"], answer: 0},
+            {q: "BYOD can reduce:", options: ["Security", "Acquisition and operational costs", "Device flexibility", "Network access"], answer: 1},
+            {q: "Cloud computing enables testing on:", options: ["Only one platform", "Multiple platforms", "No platforms", "Only physical hardware"], answer: 1},
+            {q: "Which benefit helps attract a broader range of users?", options: ["Masked complexity", "Increased costs", "Manual processes", "Specialized knowledge requirements"], answer: 0},
+            {q: "Cloud computing allows organizations to avoid:", options: ["Any IT investment", "Over-provisioning resources", "All security measures", "Network usage"], answer: 1},
+            {q: "The four primary deployment models are:", options: ["IaaS, PaaS, SaaS, CSB", "Public, Private, Community, Hybrid", "On-demand, Measured, Elastic, Self-service", "Internal, External, Shared, Dedicated"], answer: 1},
+            {q: "A public cloud is provisioned for:", options: ["Exclusive use by one organization", "Open use by the general public", "A specific community", "Hybrid use only"], answer: 1},
+            {q: "Public cloud services may be offered as:", options: ["Free only", "Subscription or pay-per-use", "Only capital expenditure", "Only private"], answer: 1},
+            {q: "A concern with public clouds is:", options: ["High control over resources", "Multi-tenancy risks", "No scalability", "High upfront costs"], answer: 1},
+            {q: "A private cloud is for:", options: ["General public", "Exclusive use by a single organization", "Multiple unrelated organizations", "Only governments"], answer: 1},
+            {q: "Private clouds offer greater:", options: ["Cost savings", "Control and privacy", "Shared resources", "Public access"], answer: 1},
+            {q: "The two variants of private cloud are:", options: ["Public and Hybrid", "On-premise and Externally-hosted", "IaaS and PaaS", "Community and Public"], answer: 1},
+            {q: "An on-premise private cloud is hosted:", options: ["At the provider's location", "Within the organization's own data centers", "In a public cloud", "On mobile devices"], answer: 1},
+            {q: "Externally-hosted private clouds are managed by:", options: ["The organization's IT department", "An external provider", "The public", "No one"], answer: 1},
+            {q: "A community cloud is for:", options: ["One organization", "Organizations with shared concerns", "The general public", "Only educational institutions"], answer: 1},
+            {q: "Community clouds can be:", options: ["Only on-premise", "Only externally-hosted", "On-premise or externally-hosted", "Only hybrid"], answer: 2},
+            {q: "A hybrid cloud combines:", options: ["Only private clouds", "Only public clouds", "Two or more distinct cloud infrastructures", "Only community clouds"], answer: 2},
+            {q: "Hybrid clouds enable:", options: ["Data and application portability", "No integration", "Only one deployment model", "Fixed resource allocation"], answer: 0},
+            {q: "Cloud bursting is a use case of:", options: ["Public cloud only", "Private cloud only", "Hybrid cloud", "Community cloud"], answer: 2}
+        ];
+
+        let userAnswers = {};
+        let submitted = false;
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <label class="option" id="q${index}_opt${optIndex}">
+                                <input type="radio" name="q${index}" value="${optIndex}" onchange="selectAnswer(${index}, ${optIndex})">
+                                <span>${String.fromCharCode(65 + optIndex)}. ${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            if (submitted) return;
+            
+            userAnswers[questionIndex] = optionIndex;
+            
+            // Remove previous selection styling
+            for (let i = 0; i < 4; i++) {
+                const opt = document.getElementById(`q${questionIndex}_opt${i}`);
+                if (opt) opt.classList.remove('selected');
+            }
+            
+            // Add selection styling
+            const selectedOpt = document.getElementById(`q${questionIndex}_opt${optionIndex}`);
+            if (selectedOpt) selectedOpt.classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            document.getElementById('answeredQuestions').textContent = answered;
+            document.getElementById('progressBar').style.width = (answered / questions.length * 100) + '%';
+        }
+
+        function submitExam() {
+            if (submitted) return;
+            
+            if (Object.keys(userAnswers).length < questions.length) {
+                alert('يرجى الإجابة على جميع الأسئلة قبل التسليم');
+                return;
+            }
+            
+            submitted = true;
+            let correct = 0;
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                if (isCorrect) correct++;
+                
+                // Show correct/incorrect styling
+                for (let i = 0; i < 4; i++) {
+                    const opt = document.getElementById(`q${index}_opt${i}`);
+                    if (opt) {
+                        opt.style.pointerEvents = 'none';
+                        if (i === q.answer) {
+                            opt.classList.add('correct');
+                        } else if (i === userAnswer && !isCorrect) {
+                            opt.classList.add('incorrect');
+                        }
+                    }
+                }
+            });
+            
+            const percentage = (correct / questions.length * 100).toFixed(1);
+            const passed = percentage >= 60;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result show ' + (passed ? 'pass' : 'fail');
+            resultDiv.innerHTML = `
+                <h2>${passed ? '✓ نجحت في الامتحان!' : '✗ لم تنجح في الامتحان'}</h2>
+                <p>النتيجة: ${correct} من ${questions.length} (${percentage}%)</p>
+                <p>${passed ? 'أحسنت! درجتك ممتازة.' : 'حاول مرة أخرى لتحسين درجتك.'}</p>
+            `;
+            
+            document.getElementById('score').textContent = `${correct}/${questions.length}`;
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetExam() {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('result').className = 'result';
+            document.getElementById('score').textContent = '-';
+            document.getElementById('answeredQuestions').textContent = '0';
+            document.getElementById('progressBar').style.width = '0%';
+            renderQuestions();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>
